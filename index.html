@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Alpine and axios</title>
+  </head>
+  <body class="p-10">
+    <div x-data="dataD()" x-init="mounted()" class="mt-16 xxl:mt-0 xxl:ml-auto">
+      <h4 class="font-bold text-lg">Axios example with Alpine js</h4>
+      <p>in this example we are using https://reqres.in</p>
+
+      <div style="height: 25px" class="mt-6">
+        <p
+          x-show.transition="ok"
+          style="display: none"
+          class="bg-blue-500 text-white rounded inline py-1 px-2"
+        >
+          updated!
+        </p>
+      </div>
+
+      <div class="mt-4">
+        <label
+          ><input
+            x-model="dato1"
+            x-bind:checked="dato1"
+            @click="inviaValoriCheckBox(dato1)"
+            type="checkbox"
+            class="border border-1"
+          />
+          axios get https://reqres.in/api/unknown/2
+        </label>
+      </div>
+
+      <p x-show.transition="axiosResponse" x-text="axiosResponse"></p>
+    </div>
+    <script>
+      function dataD() {
+        return {
+          dato1: '',
+          axiosResponse: '',
+          ok: false,
+
+          inviaValoriCheckBox(val, servizio) {
+            axios
+              .get('https://api.govtp.ru/api/classificators', {
+                headers: { Authorization: 'Bearer ' + proccess.env.API_TOKEN },
+              })
+              .then((r) => {
+                console.log(r.data.data);
+                this.ok = true;
+                this.axiosResponse = r.data.data.name;
+                setTimeout(() => {
+                  this.ok = false;
+                }, 5000);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+          mounted() {
+            console.log('mounted');
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
